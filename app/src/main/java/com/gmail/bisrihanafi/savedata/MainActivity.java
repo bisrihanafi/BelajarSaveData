@@ -3,8 +3,11 @@ package com.gmail.bisrihanafi.savedata;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,11 +16,14 @@ import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener{
     EditText nama, telepon;
-    TextView dataTelepon;
     Button tombolInput;
+    ListView listView;
+    ArrayList<String> listnama=new ArrayList<String>();
+    ArrayAdapter<String> listadapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,8 +31,11 @@ public class MainActivity extends AppCompatActivity {
         //penghubung antara objek dalam java dengan layout
         nama = (EditText) findViewById(R.id.editNama);
         telepon = (EditText) findViewById(R.id.editTelepon);
-        dataTelepon = (TextView) findViewById(R.id.textDataTelp);
+        //dataTelepon = (TextView) findViewById(R.id.textDataTelp);
         tombolInput = (Button) findViewById(R.id.buttonInput);
+        listView=(ListView)findViewById(R.id.listView);
+        listadapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, listnama);
+        listView.setOnItemClickListener(this);
         //event pada tombol
         tombolInput.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,15 +81,18 @@ public class MainActivity extends AppCompatActivity {
     }
     public void tampilkanData() {
         try {
+            listnama.clear();
             // menyiapkan file untuk dibaca
             FileInputStream dataFile = openFileInput("telepon.dat");
             DataInputStream input = new DataInputStream(dataFile);
             //menyiapkan buffer
             byte[] bufNama = new byte[30];
             byte[] bufTelepon = new byte[15];
-            String infoData = "Data Telepon:\n";
+            String infoData = "";
             //proses membaca data
+            int countadd=0;
             while (input.available() > 0) {
+                countadd++;
                 input.read(bufNama);
                 input.read(bufTelepon);
                 String dataNama = "";
@@ -90,16 +102,23 @@ public class MainActivity extends AppCompatActivity {
                 for (int i = 0; i < bufTelepon.length; i++)
                     dataTelepon = dataTelepon + (char) bufTelepon[i];
                     //format menampilkan data
-                infoData = infoData + " > " + dataNama + "-" + dataTelepon + "\n";
+                infoData =countadd+". " + dataNama + "-" + dataTelepon + "\n";
+                listnama.add(infoData);
 
             }
             //menampilkan data ke teks view
-            dataTelepon.setText(infoData);
+            //dataTelepon.setText(infoData);
+            listView.setAdapter(listadapter);
             dataFile.close();
         }
         catch (IOException e) {
             Toast.makeText(getBaseContext(), "Kesalahan: " + e.getMessage(),
                     Toast.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Toast.makeText(this, listadapter.getItem(position), Toast.LENGTH_SHORT).show();
     }
 }

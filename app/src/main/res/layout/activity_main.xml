@@ -64,18 +64,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Input No Telepon" />
-    <ListView
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Data Telepon :"
+            android:textSize="24sp" />
+
+        <ListView
         android:layout_width="match_parent"
         android:layout_height="437dp"
         android:id="@+id/listView"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp" />
-        <TextView
-            android:paddingTop="10dp"
-            android:id="@+id/textDataTelp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Data Telepon: \n"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
 </RelativeLayout>
